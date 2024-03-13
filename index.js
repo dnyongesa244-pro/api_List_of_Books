@@ -1,4 +1,5 @@
 const express = require('express');
+const { request } = require('http');
 const sqlite3 = require('sqlite3');
 
 const app = express();
@@ -17,8 +18,8 @@ const db = new sqlite3.Database('./books.db', (err)=>{
 const createTableQuery = `
     CREATE TABLE IF NOT EXISTS Books(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Title VARCHAR(50),
-        Author VARCHAR(50)
+        Author VARCHAR(50),
+        Title VARCHAR(50)
     )
 `;
 
@@ -44,7 +45,7 @@ function insertSeedData(data){
     for(book of data){
 
         let query = "INSERT INTO Books (Title, Author) VALUES (?, ?)";
-        db.run(query, book['author'], book['name'], (err)=>{
+        db.run(query, book['name'], book['author'], (err)=>{
             if(err){
                 console.log('Error seeding the data: ', err);
             }
@@ -55,8 +56,27 @@ function insertSeedData(data){
 
 
 // CRUD commands written here
-// your part to shine 
 
+// GET
+
+// POST
+
+// PUT
+// I will continue tommorow
+app.put('/book/:id', (req, res)=>{
+    let bookId = req.params.id;
+    bookId = Number(bookId);
+
+    let query = 'SELECT Title FROM Books WHERE id = ?';
+    let book = db.run(query, bookId, ()=>{
+        res.send(book)
+    })
+    console.log(book)
+    // res.send(book)
+});
+
+
+// DELETE
 
 
 
