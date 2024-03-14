@@ -1,6 +1,5 @@
 const express = require('express');
-const { request } = require('http');
-const sqlite3 = require('sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 
@@ -63,15 +62,19 @@ function insertSeedData(data){
 
 // PUT
 // I will continue tommorow
-app.put('/book/:id', (req, res)=>{
+app.put('/update/book/:id/:book', (req, res)=>{
     let bookId = req.params.id;
     bookId = Number(bookId);
 
     let query = 'SELECT Title FROM Books WHERE id = ?';
-    let book = db.run(query, bookId, ()=>{
-        res.send(book)
-    })
-    console.log(book)
+    let book = db.get(query,[bookId], (err, row)=>{
+        if(err){
+            res.json('record not found')
+        }
+        res.json(row)
+    });
+    
+    // console.log(book)
     // res.send(book)
 });
 

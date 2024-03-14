@@ -15,5 +15,4 @@ server runs on port 5000 but you can change it\
 - step3: comment step 1 to avoid duplicate data
 ### Quering the database
 
-1. fetching items run `db.get(your query here)`
-2. insert records `db.run(your query here)`
+# [link](https://www.sqlitetutorial.net/sqlite-nodejs/connect/)
