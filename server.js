@@ -30,16 +30,33 @@ app.post('/create/book',(req, res)=>{
   }
 });
 
-// fetching data
-app.get('/api/data', async (req, res) => {
+//Read Operation
+//Get
+app.get('/books:id', (req, res)=>{
   try {
-    const [rows] = await pool.query('SELECT * FROM Table');
-    res.json(rows);
+    const bookId = req.params.id;
+
+    //perfoming the read operation
+    const readQuery = "SELECT * FROM Books WHERE id=?";
+    db.get(readQuery, [bookId], function (err, row) {
+      if (err) {
+        return res.status(500).json({error: err.message});
+      }
+
+      //return message "book not found" if no book is found
+      if (!row) {
+        return res.status(404).json({error: "Book not found"});
+      }
+
+      //response for book retreaved
+      res.status(200).json(row);
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('An error occurred while fetching data');
+    res.status(500).json({error: err.message});
   }
 });
+
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
