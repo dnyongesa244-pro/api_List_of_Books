@@ -56,7 +56,30 @@ app.get('/books:id', (req, res)=>{
   }
 });
 
+//Delete Operation
+app.delete('/delete/book/:id', (req, res)=>{
+  try {
+    const bookId = req.params.id;
 
+    //doing the delete operation
+    const deleteQuery = 'DELETE FROM Books WHERE id = ?';
+    db.run(deleteQuery, [bookId], function (err) {
+      if (err) {
+        return res.status(500).json({error: err.message});
+      }
+
+      //if no book with given id is not found
+      if (this.changes === 0) {
+        return res.status(404).json({error: "Book not found"});
+      }
+
+      //response to show succes
+      res.status(200).json({message: "Book deleted successfully"});
+    }) ;
+  } catch (error) {
+    res.status(500).json({error: error.message});
+  }
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
