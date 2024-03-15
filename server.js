@@ -1,20 +1,33 @@
 const express = require("express");
-const mysql = require('mysql2/promise');
+const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const port = 3000;
 
-// database connection 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'Kipngetich222',
-  password: 'PHW#84#vic',
-  database: ''
-});
+//Operations
+//create operation - post
+app.post('/create/book',(req, res)=>{
+  try {
+    const {title, auther} = req.body;
 
+    //check the required fields
+    if (!title || !auther) {
+      return res.status(400).json({error:"missing required field"});
+    }
 
-app.get('/', (req, res) => {
-    res.send("Welcome");
+    //Do the insertion
+    const insertQuery = 'INSERT INTO Books (Title, Auther) VALUES(?,?)';
+    db.run(insertQuery, [title,auther], function (err) {
+      if (err) {
+        return res.status(500).json({error: err.message});
+      }
+
+      //send response for success
+      res.status(201).json({message: "Book created succesfully"});
+    });
+  } catch (error) {
+    res.status(500).json({error: error.message})
+  }
 });
 
 // fetching data
