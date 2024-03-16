@@ -11,7 +11,7 @@ server runs on port 5000 but you can change it\
 ### running the database
 - step 1: uncomment line 54 -`insertSeedData(seedData)`
 - step 2: run app
-`node index.js`
+`node server.js`
 - step3: comment step 1 to avoid duplicate data
 ### Quering the database
 

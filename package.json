@@ -2,7 +2,7 @@
   "name": "api_list_of_books",
   "version": "1.0.0",
   "description": "Get a list of books with the GET command, add a new book with POST, change an old book with PUT, or remove a book with DELETE",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
