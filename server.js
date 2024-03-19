@@ -17,7 +17,8 @@ const createTableQuery = `
   CREATE TABLE IF NOT EXISTS Books(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       Author VARCHAR(50),
-      Title VARCHAR(50)
+      Title VARCHAR(50),
+      status VARCHAR(20)
   )
 `;
 
@@ -31,62 +32,54 @@ db.run(createTableQuery, (err) =>{
 
 // custom books
 const seedData = [
-  {"author": "James Rieng", "name": "The Hall of Fame"},
-  {"author": "Andreuw Makabuso", "name": "The Rising Man"},
-  {"author": "Joanna Hekaruko", "name": "The Jungle King"},
-  {"author": "Elizabeth Sonng", "name": "The Dominion of Sansing"},
-  {"author": "Robert", "name": "Rich Dad Poor Dad"}
+  {"author": "James Rieng", "name": "The Hall of Fame", "status": 'Reading'},
+  {"author": "Andreuw Makabuso", "name": "The Rising Man", "status": "queued"},
+  {"author": "Joanna Hekaruko", "name": "The Jungle King", "status": "queued"},
+  {"author": "Elizabeth Sonng", "name": "The Dominion of Sansing", "status": "read"},
+  {"author": "Robert", "name": "Rich Dad Poor Dad", "status": "read"}
 ];
 
 // insert seed data into database
 function insertSeedData(data){
   for(book of data){
 
-      let query = "INSERT INTO Books (Title, Author) VALUES (?, ?)";
-      db.run(query, book['name'], book['author'], (err)=>{
+      let query = "INSERT INTO Books (Title, Author, status) VALUES (?, ?, ?)";
+      db.run(query, book['name'], book['author'], book['status'], (err)=>{
           if(err){
               console.log('Error seeding the data: ', err);
           }
       });
   }
 };
+// insertSeedData(seedData)
 
-//Operations
-//create operation - post
-app.post('/create/book',(req, res)=>{
-  try {
-    const {title, auther} = req.body;
+// -------------------------CRUD----------------------------------
 
-    //check the required fields
-    if (!title || !auther) {
-      return res.status(400).json({error:"missing required field"});
-    }
 
-    //Do the insertion
-    const insertQuery = 'INSERT INTO Books (Title, Auther) VALUES(?,?)';
-    db.run(insertQuery, [title,auther], function (err) {
-      if (err) {
-        return res.status(500).json({error: err.message});
-      }
-
-      //send response for success
-      res.status(201).json({message: "Book created succesfully"});
-    });
-  } catch (error) {
-    res.status(500).json({error: error.message})
-  }
-});
 
 //Read Operation
-//Get
-app.get('/books:id', (req, res)=>{
+
+// GET ALL
+app.get('/books', (req, res) => {
+  let query = 'SELECT * FROM Books';
+  db.all(query, (err, rows)=>{
+    if(err){
+      res.status(501).json(err.message)
+    }
+    res.status(200).json(rows)
+  })
+});
+
+
+// GET UNIQUE
+app.get('/books/:id', (req, res)=>{
   try {
-    const bookId = req.params.id;
+    let bookId = req.params.id;
     bookId = Number(bookId);
 
     //perfoming the read operation
     const readQuery = "SELECT * FROM Books WHERE id=?";
-    db.get(readQuery, [bookId], function (err, row) {
+    db.get(readQuery, [bookId], (err, row) =>{
       if (err) {
         return res.status(500).json({error: err.message});
       }
@@ -100,18 +93,50 @@ app.get('/books:id', (req, res)=>{
       res.status(200).json(row);
     });
   } catch (error) {
-    res.status(500).json({error: err.message});
+    res.status(500).json({error: error.message});
   }
 });
+
+
+
+app.put('/book/:id/:status', (req, res)=>{
+    // need help
+});
+
+
+app.post('/create/:title/:author/:status',(req, res)=>{
+  try {
+    const {title, author, status} = req.params;
+
+    //check the required fields
+    if (!title || !author) {
+      return res.status(400).json({error:"missing required field"});
+    }
+
+    //Do the insertion
+    const insertQuery = 'INSERT INTO Books (Author, Title, status) VALUES(?, ?, ?)';
+    db.run(insertQuery, [title, author, status], function (err, row) {
+      if (err) {
+        return res.status(500).json({error: err.message});
+      }
+
+      //send response for success
+      res.status(201).json({message: "Book created succesfully"});
+    });
+  } catch (error) {
+    res.status(500).json({error: error.message})
+  }
+});
+
 
 //Delete Operation
 app.delete('/delete/book/:id', (req, res)=>{
   try {
-    const bookId = req.params.id;
-
+    let bookId = req.params.id;
+    bookId = Number(bookId);
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
-    db.run(deleteQuery, [bookId], function (err) {
+    db.run(deleteQuery, [bookId], (err, row)=> {
       if (err) {
         return res.status(500).json({error: err.message});
       }
@@ -122,7 +147,7 @@ app.delete('/delete/book/:id', (req, res)=>{
       }
 
       //response to show succes
-      res.status(200).json({message: "Book deleted successfully"});
+      res.status(200).json({message :"Book Deleted"});
     }) ;
   } catch (error) {
     res.status(500).json({error: error.message});
@@ -132,47 +157,8 @@ app.delete('/delete/book/:id', (req, res)=>{
 
 
 
+// --------------------SERVER CONFIGURATION-----------------
 
-
-
-
-// insertSeedData(seedData)
-
-
-// CRUD commands written here
-
-// GET
-
-// POST
-
-// PUT
-// I will continue tommorow
-app.put('/update/book/:id/:book', (req, res)=>{
-    let bookId = req.params.id;
-    bookId = Number(bookId);
-
-    let query = 'SELECT Title FROM Books WHERE id = ?';
-    let book = db.get(query,[bookId], (err, row)=>{
-        if(err){
-            res.json('record not found')
-        }
-        res.json(row)
-    });
-    
-    // console.log(book)
-    // res.send(book)
-});
-
-
-// DELETE
-
-
-
-
-
-
-
-// start the express server
 const PORT = 5000;
 app.listen(PORT, () =>{
     console.log(`sever running on http://localhost:${PORT}`);

@@ -1,4 +1,4 @@
 node_modules
-seed.js
-schema.sql
-books.db
+book.db
+package.json
+package-lock.json

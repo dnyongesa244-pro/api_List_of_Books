@@ -16,3 +16,7 @@ server runs on port 5000 but you can change it\
 ### Quering the database
 
 # [link](https://www.sqlitetutorial.net/sqlite-nodejs/connect/)
+
+
+## update
+you have to re-initialize node application `package.json, package-lock.json and node_modules`
