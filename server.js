@@ -98,10 +98,71 @@ app.get('/books/:id', (req, res)=>{
 });
 
 
+// update operation
 
-app.put('/book/:id/:status', (req, res)=>{
-    // need help
+// app.put('/book/:id', (req, res, next) => {
+//     var updateQuery = req.params;
+//     db.run(
+//         `UPDATE Books SET Author = ?, Title = ?, status = ? WHERE id = ?`,
+//         [req.body.Author, req.body.Title, req.body.status, req.params.id],
+//         function (err, result) {
+//             if (err) {
+//                 res.status(400).json({"error": err.message });
+//                 return;
+//             }
+//             res.status(200).json({ updatedID: req.params.id });
+//         } 
+//     );
+// });
+
+
+//chat -v
+
+app.put('/update/book/:id', (req, res) => {
+    try {
+        const bookId = req.params.id;
+        const { title, author } = req.body;
+
+        // Check if required fields are present
+        if (!title && !author) {
+            return res.status(400).json({ error: 'At least one field (title or author) is required for update' });
+        }
+
+        // Build update query
+        let updateQuery = 'UPDATE Books SET';
+        const updateParams = [];
+        if (title) {
+            updateQuery += ' Title = ?,';
+            updateParams.push(title);
+        }
+        if (author) {
+            updateQuery += ' Author = ?,';
+            updateParams.push(author);
+        }
+        // Remove the trailing comma and add WHERE clause
+        updateQuery = updateQuery.slice(0, -1) + ' WHERE id = ?';
+        updateParams.push(bookId);
+
+        // Execute the update operation
+        db.run(updateQuery, updateParams, function (err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            // Check if any row was affected
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'Book not found or no changes were made' });
+            }
+            // Send success response
+            res.status(200).json({ message: 'Book updated successfully' });
+        });
+    } catch (error) {
+        // Handle unexpected errors
+        res.status(500).json({ error: error.message });
+    }
 });
+
+
+
 
 
 app.post('/create/:title/:author/:status',(req, res)=>{
