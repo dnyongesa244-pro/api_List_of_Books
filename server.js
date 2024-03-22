@@ -18,7 +18,7 @@ const createTableQuery = `
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       Author VARCHAR(50),
       Title VARCHAR(50),
-      status VARCHAR(20)
+      status TEXT
   )
 `;
 
@@ -100,13 +100,18 @@ app.get('/books/:id', (req, res)=>{
 
 // update operation
 
-app.put('/book/:id/:status', (req, res, next) => {
+app.put('/book/:id/:status', (req, res) => {
     var {id, status} = req.params;
     id = Number(id);
+    const query = "UPDATE Books SET status = ? WHERE id = ?";
 
-    const query = "UPDATE Books SET status = 'backbakc' WHERE id = 1"
-    db.run(query, ()=>{
-      res.json('done')
+    db.run(query, [status, id], (err)=>{
+      if(err){
+        res.status(501).json(err);
+      }
+      else{
+        res.json('success: book has been updated');
+      }
     })
 });
 
