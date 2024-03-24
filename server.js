@@ -101,18 +101,35 @@ app.get('/books/:id', (req, res)=>{
 // update operation
 
 app.put('/book/:id/:status', (req, res) => {
-    var {id, status} = req.params;
-    id = Number(id);
-    const query = "UPDATE Books SET status = ? WHERE id = ?";
+    var {idParam, status} = req.params;
+    idParam = Number(idParam);
 
-    db.run(query, [status, id], (err)=>{
-      if(err){
-        res.status(501).json(err);
+    dbId = db.all("SELECT id FROM Books", (err, row)=>{
+      // res.send(row)
+      for(item of row){
+        if(idParam == item.id){
+          updateStatus(idParam, status)
+        }
+        else{
+          continue
+        }
       }
-      else{
-        res.json('success: book has been updated');
-      }
-    })
+    });
+
+
+    function updateStatus(idParam, status){
+      const query = "UPDATE Books SET status = ? WHERE id = ?";
+  
+      db.run(query, [status, idParam], (err)=>{
+        if(err){
+          res.status(501).json(err);
+        }
+        else{
+          res.json('success: book has been updated');
+        }
+      });
+    }
+  
 });
 
 
@@ -120,7 +137,7 @@ app.put('/book/:id/:status', (req, res) => {
 
 // app.put('/book/:id/:status', (req, res) => {
 //     try {
-//         const bookId = req.params.id;
+//         con  st bookId = req.params.id;
 //         const { title, author } = req.params;
 
 //         // Check if required fields are present
