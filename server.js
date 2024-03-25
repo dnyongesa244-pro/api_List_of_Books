@@ -78,10 +78,13 @@ app.get('/books/:id', (req, res)=>{
     let bookId = req.params.id;
     bookId = Number(bookId);
     
+    
     // Check if bookId is a valid integer
     if (!Number.isInteger(bookId)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
+
+    
     
 
     // Performing the read operation
@@ -111,18 +114,20 @@ app.get('/books/:id', (req, res)=>{
 // update operation
 
 app.put('/book/:id/:status', (req, res) => {
-    var {idParam, status} = req.params;
+    var {id, status} = req.params;
+    let idParam = id;
+    let stat = status;
+    idParam = Number(idParam);
 
     if (!Number.isInteger(idParam)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
 
-    idParam = Number(idParam);
+    
 
-    function updateStatus(idParam, status){
-      const query = "UPDATE Books SET status = ? WHERE id = ?";
+    const query = "UPDATE Books SET status = ? WHERE id = ?";
   
-      db.run(query, [status, idParam], (err)=>{
+      db.run(query, [stat, idParam], (err)=>{
         if(err){
           res.status(501).json(err);
         }
@@ -130,24 +135,11 @@ app.put('/book/:id/:status', (req, res) => {
           res.json('success: book has been updated');
         }
       });
-    }
+
+
     
-    updateStatus(idParam, status)
-
-    // db.all("SELECT id FROM Books", (err, row)=>{
-    //   // res.send(row)
-    //   for(item of row){
-    //     if(idParam === item.id){
-    //       updateStatus(idParam, status)
-    //     }
-    //   }
-    // });
-
-
-
-  
-});
-
+    });
+    
 
 
 
@@ -183,13 +175,14 @@ app.post('/create/:title/:author/:status',(req, res)=>{
 app.delete('/delete/book/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
+    bookId = Number(bookId);
     
     // Check if bookId is a valid integer
     if (!Number.isInteger(bookId)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
     
-    bookId = Number(bookId);
+    
 
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
