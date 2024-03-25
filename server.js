@@ -51,7 +51,7 @@ function insertSeedData(data){
       });
   }
 };
-// insertSeedData(seedData)
+//insertSeedData(seedData)
 
 // -------------------------CRUD----------------------------------
 
@@ -71,31 +71,41 @@ app.get('/books', (req, res) => {
 });
 
 
+//----------------------------------------
 // GET UNIQUE
 app.get('/books/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
     bookId = Number(bookId);
+    
+    // Check if bookId is a valid integer
+    if (!Number.isInteger(bookId)) {
+      return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
+    }
+    
 
-    //perfoming the read operation
+    // Performing the read operation
     const readQuery = "SELECT * FROM Books WHERE id=?";
     db.get(readQuery, [bookId], (err, row) =>{
       if (err) {
         return res.status(500).json({error: err.message});
       }
 
-      //return message "book not found" if no book is found
+      // Return message "book not found" if no book is found
       if (!row) {
         return res.status(404).json({error: "Book not found"});
       }
 
-      //response for book retreaved
+      // Response for book retrieved
       res.status(200).json(row);
     });
   } catch (error) {
     res.status(500).json({error: error.message});
   }
 });
+
+
+//----------------------------------------------
 
 
 // update operation
@@ -132,50 +142,6 @@ app.put('/book/:id/:status', (req, res) => {
 });
 
 
-//chat -v
-
-// app.put('/book/:id/:status', (req, res) => {
-//     try {
-//         con  st bookId = req.params.id;
-//         const { title, author } = req.params;
-
-//         // Check if required fields are present
-//         if (!title && !author) {
-//             return res.status(400).json({ error: 'At least one field (title or author) is required for update' });
-//         }
-
-//         // Build update query
-//         let updateQuery = 'UPDATE Books SET';
-//         const updateParams = [];
-//         if (title) {
-//             updateQuery += ' Title = ?,';
-//             updateParams.push(title);
-//         }
-//         if (author) {
-//             updateQuery += ' Author = ?,';
-//             updateParams.push(author);
-//         }
-//         // Remove the trailing comma and add WHERE clause
-//         updateQuery = updateQuery.slice(0, -1) + ' WHERE id = ?';
-//         updateParams.push(bookId);
-
-//         // Execute the update operation
-//         db.run(updateQuery, updateParams, function (err) {
-//             if (err) {
-//                 return res.status(500).json({ error: err.message });
-//             }
-//             // Check if any row was affected
-//             if (this.changes === 0) {
-//                 return res.status(404).json({ error: 'Book not found or no changes were made' });
-//             }
-//             // Send success response
-//             res.status(200).json({ message: 'Book updated successfully' });
-//         });
-//     } catch (error) {
-//         // Handle unexpected errors
-//         res.status(500).json({ error: error.message });
-//     }
-// });
 
 
 
@@ -211,6 +177,13 @@ app.delete('/delete/book/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
     bookId = Number(bookId);
+
+    // Check if bookId is a valid integer
+    if (!Number.isInteger(bookId)) {
+      return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
+    }
+
+
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
     db.run(deleteQuery, [bookId], (err, row)=> {
