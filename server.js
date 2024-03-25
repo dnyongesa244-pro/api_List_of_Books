@@ -112,6 +112,11 @@ app.get('/books/:id', (req, res)=>{
 
 app.put('/book/:id/:status', (req, res) => {
     var {idParam, status} = req.params;
+
+    if (!Number.isInteger(idParam)) {
+      return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
+    }
+
     idParam = Number(idParam);
 
     function updateStatus(idParam, status){
@@ -127,14 +132,16 @@ app.put('/book/:id/:status', (req, res) => {
       });
     }
     
-    dbId = db.all("SELECT id FROM Books", (err, row)=>{
-      // res.send(row)
-      for(item of row){
-        if(idParam == item.id){
-          updateStatus(idParam, status)
-        }
-      }
-    });
+    updateStatus(idParam, status)
+
+    // db.all("SELECT id FROM Books", (err, row)=>{
+    //   // res.send(row)
+    //   for(item of row){
+    //     if(idParam === item.id){
+    //       updateStatus(idParam, status)
+    //     }
+    //   }
+    // });
 
 
 
@@ -176,13 +183,13 @@ app.post('/create/:title/:author/:status',(req, res)=>{
 app.delete('/delete/book/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
-    bookId = Number(bookId);
-
+    
     // Check if bookId is a valid integer
     if (!Number.isInteger(bookId)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
-
+    
+    bookId = Number(bookId);
 
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
