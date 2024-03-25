@@ -104,19 +104,6 @@ app.put('/book/:id/:status', (req, res) => {
     var {idParam, status} = req.params;
     idParam = Number(idParam);
 
-    dbId = db.all("SELECT id FROM Books", (err, row)=>{
-      // res.send(row)
-      for(item of row){
-        if(idParam == item.id){
-          updateStatus(idParam, status)
-        }
-        else{
-          continue
-        }
-      }
-    });
-
-
     function updateStatus(idParam, status){
       const query = "UPDATE Books SET status = ? WHERE id = ?";
   
@@ -129,6 +116,18 @@ app.put('/book/:id/:status', (req, res) => {
         }
       });
     }
+    
+    dbId = db.all("SELECT id FROM Books", (err, row)=>{
+      // res.send(row)
+      for(item of row){
+        if(idParam == item.id){
+          updateStatus(idParam, status)
+        }
+      }
+    });
+
+
+
   
 });
 
