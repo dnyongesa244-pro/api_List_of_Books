@@ -177,6 +177,12 @@ app.post('/create/:title/:author/:status',(req, res)=>{
 app.delete('/delete/book/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
+
+    // Check if bookId is a valid integer
+    if (!Number.isInteger(Number(bookId))) {
+      return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
+    }
+
     bookId = Number(bookId);
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
