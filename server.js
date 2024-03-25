@@ -76,13 +76,13 @@ app.get('/books', (req, res) => {
 app.get('/books/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
+    bookId = Number(bookId);
     
     // Check if bookId is a valid integer
-    if (!Number.isInteger(Number(bookId))) {
+    if (!Number.isInteger(bookId)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
     
-    bookId = Number(bookId);
 
     // Performing the read operation
     const readQuery = "SELECT * FROM Books WHERE id=?";
@@ -177,13 +177,14 @@ app.post('/create/:title/:author/:status',(req, res)=>{
 app.delete('/delete/book/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
+    bookId = Number(bookId);
 
     // Check if bookId is a valid integer
-    if (!Number.isInteger(Number(bookId))) {
+    if (!Number.isInteger(bookId)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
 
-    bookId = Number(bookId);
+
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
     db.run(deleteQuery, [bookId], (err, row)=> {
