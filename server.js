@@ -213,6 +213,29 @@ app.delete('/delete/book/:id', (req, res)=>{
 
 
 
+app.post('/create/:title/:author/:status', (req, res) => {
+  try {
+    const { title, author, status } = req.params;
+
+    // check the required fields
+    if (!title || !author) {
+      return res.status(400).json({ error: "missing required field" });
+    }
+
+    // Do the insertion
+    const insertQuery = 'INSERT INTO Books (Author, Title, status) VALUES (?, ?, ?)';
+    db.run(insertQuery, [title, author, status], function (err, row) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+
+      // send response for success
+      res.status(201).json({ message: "Book created successfully" });
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // --------------------SERVER CONFIGURATION-----------------
 
