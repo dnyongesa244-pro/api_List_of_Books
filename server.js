@@ -111,16 +111,17 @@ app.get('/books/:id', (req, res)=>{
 // update operation
 
 app.put('/book/:id/:status', (req, res) => {
-    var {idParam, status} = req.params;
-
+    var idParam = req.params.id;
+    var status = req.params.status;
+    idParam = Number(idParam);
+    
     if (!Number.isInteger(idParam)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
-
-    idParam = Number(idParam);
+    
 
     function updateStatus(idParam, status){
-      const query = "UPDATE Books SET status = ? WHERE id = ?";
+      let query = "UPDATE Books SET status = ? WHERE id = ?";
   
       db.run(query, [status, idParam], (err)=>{
         if(err){
@@ -134,23 +135,7 @@ app.put('/book/:id/:status', (req, res) => {
     
     updateStatus(idParam, status)
 
-    // db.all("SELECT id FROM Books", (err, row)=>{
-    //   // res.send(row)
-    //   for(item of row){
-    //     if(idParam === item.id){
-    //       updateStatus(idParam, status)
-    //     }
-    //   }
-    // });
-
-
-
-  
 });
-
-
-
-
 
 
 
@@ -183,13 +168,13 @@ app.post('/create/:title/:author/:status',(req, res)=>{
 app.delete('/delete/book/:id', (req, res)=>{
   try {
     let bookId = req.params.id;
+    bookId = Number(bookId);
     
     // Check if bookId is a valid integer
     if (!Number.isInteger(bookId)) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
     
-    bookId = Number(bookId);
 
     //doing the delete operation
     const deleteQuery = 'DELETE FROM Books WHERE id = ?';
@@ -210,7 +195,6 @@ app.delete('/delete/book/:id', (req, res)=>{
     res.status(500).json({error: error.message});
   }
 });
-
 
 
 
