@@ -7,3 +7,7 @@ if (!Number.isInteger(Number(bookId))) {
       return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
     }
 
+3. added validation to the delete operation such that it checks the input given if it is a number or not a number. it's the same validation for get operation:
+if (!Number.isInteger(Number(bookId))) {
+      return res.status(400).json({error: "Invalid input. Please provide a valid integer ID."});
+    }
