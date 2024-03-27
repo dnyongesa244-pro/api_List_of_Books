@@ -1,0 +1,61 @@
+.topnav{
+    background-color: rgb(100, 134, 163);
+    overflow: hidden;
+}
+
+.topnav a{
+    color: rgb(70, 63, 63);
+    display: block;
+    padding: 14px 16px;
+    text-align: center;
+    text-decoration: none;
+    float: left;
+    font-size: 20px;
+}
+.logo{
+    font-size: 30px;
+}
+
+.topnav a:hover {
+    background-color: lightcoral;
+    color: brown;
+}
+
+.topnav a:active {
+    background-color: blue;
+    color: white;
+}
+.topnav .icon{
+    display: none;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+    max-width: 150px;
+    text-align: center;
+    margin: auto;
+    font-family: Arial, Helvetica, sans-serif;
+    float: left;
+    padding: 20px;
+}
+
+.auther{
+    color: grey;
+    font-size: 22px;
+}
+
+.card button {
+    border: none;
+    outline: 0;
+    padding: 12px;
+    color: white;
+    background-color: #000;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+}
+
+.card button:hover {
+    opacity: 0.7;
+}
