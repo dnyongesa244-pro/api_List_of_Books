@@ -2,6 +2,8 @@ const express = require("express");
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 // -------setting up the sqlite3 database--------
 const db = new sqlite3.Database('./books.db', (err)=>{
@@ -55,7 +57,15 @@ function insertSeedData(data){
 
 // -------------------------CRUD----------------------------------
 
-
+app.get('/', (req, res) => {
+  let query = 'SELECT * FROM Books';
+  db.all(query, (err, books)=>{
+    if(err){
+      res.status(501).json(err.message)
+    }
+    res.render('client', {books: books});
+  })
+});
 
 //Read Operation
 
@@ -134,18 +144,6 @@ app.put('/book/:id/:status', (req, res) => {
     
     updateStatus(idParam, status)
 
-    // db.all("SELECT id FROM Books", (err, row)=>{
-    //   // res.send(row)
-    //   for(item of row){
-    //     if(idParam === item.id){
-    //       updateStatus(idParam, status)
-    //     }
-    //   }
-    // });
-
-
-
-  
 });
 
 
