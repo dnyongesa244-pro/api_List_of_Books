@@ -2,7 +2,7 @@ const express = require("express");
 const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs');  // npm install ejs
 app.use(express.static('public'));
 
 // -------setting up the sqlite3 database--------

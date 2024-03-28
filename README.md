@@ -4,8 +4,10 @@ Get a list of books with the GET command, add a new book with POST, change an ol
 ## Initialized the database
 
 - npm install sqlite3
-- npm install express\
-- npm install ejs\
+- npm install express
+- ---------------------------
+- # npm install ejs
+- --------------------------------
 I added some custom books into the db\
 server runs on port 5000 but you can change it\
 
